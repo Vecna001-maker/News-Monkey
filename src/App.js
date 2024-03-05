@@ -1,25 +1,55 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useState } from 'react';
+import Navbar from './components/Navbar';
+import News from './components/News';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LoadingBar from 'react-top-loading-bar';
 
-function App() {
+
+export default function App(props) {
+
+  const apiKey = process.env.REACT_APP_API_KEY;
+
+
+  const [mode,setmode] = useState('light');
+  const [progress,setprogress] = useState('0');
+
+
+  const toggleMode = () => {
+      if(mode === 'dark'){
+        setmode('light');
+      }
+      else{
+        setmode('dark');
+      }
+    
+  };
+
+  const setProgress = (progress) => {
+      setprogress(progress);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Router>
+      <div>
+        <LoadingBar
+          color='#f11946'
+          height='2px'
+          progress={progress}
+        // onLoaderFinished={() => setProgress(0)}
+        />
+        <Navbar mode={mode} toggleMode={toggleMode} />
+        
+
+        <Routes>
+          <Route exact path="/" element={<News apiKey={apiKey} setProgress={setProgress} key={'general'} mode={mode} pageSize={5} category={'general'} />} />
+          <Route exact path="/business" element={<News apiKey={apiKey} setProgress={setProgress} key={'business'} mode={mode} pageSize={5} category={'business'} />} />
+          <Route exact path="/health" element={<News apiKey={apiKey} setProgress={setProgress} key={'health'} mode={mode} pageSize={5} category={'health'} />} />
+          <Route exact path="/sports" element={<News apiKey={apiKey} setProgress={setProgress} key={'sports'} mode={mode} pageSize={5} category='sports' />} />
+        </Routes>
+      </div>
+    </Router>
+
+  )
 }
 
-export default App;
