@@ -31,7 +31,7 @@ export default function News(props) {
     
 
     props.setProgress(10);
-    console.log("DidMount");
+  //  console.log("DidMount");
 
     setloading(true);
 
