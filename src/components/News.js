@@ -38,7 +38,7 @@ export default function News(props) {
     let promise = await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.apiKey}&page=1&pageSize=${props.pageSize}`);
 
     let response = await promise.json();
-
+    console.log("Getting New Response "+response)
     props.setProgress(50);
 
     setarticles(response.articles);
