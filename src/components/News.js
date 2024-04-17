@@ -21,6 +21,14 @@ export default function News(props) {
       document.title = (a.charAt(0)).toUpperCase() + a.slice(1, a.length);
     }
 
+const checking=async()=>{
+  const response=await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.apiKey}&page=1&pageSize=${props.pageSize}`,{
+    method:'GET',
+  })
+  const res=await response.json();
+  console.log(res);
+}
+checking()
 
 
   const updateNews = async () => {
