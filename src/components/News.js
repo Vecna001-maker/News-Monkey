@@ -21,14 +21,24 @@ export default function News(props) {
       document.title = (a.charAt(0)).toUpperCase() + a.slice(1, a.length);
     }
 
-const checking=async()=>{
-  const response=await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.apiKey}&page=1&pageSize=${props.pageSize}`,{
-    method:'GET',
-  })
-  const res=await response.json();
-  console.log(res);
-}
-checking()
+//const checking=async()=>{
+ // const proxyUrl = "https://cors-anywhere.herokuapp.com/"
+// const qInTitle = "";
+// const from = "";
+// const apiKey = "e80d8762132344ca9219f20be1af9c5c";
+// const url = `${proxyUrl}https://newsapi.org/v2/everything?qInTitle=${qInTitle}&from=${from}language=en&apiKey=${apiKey}`;
+// const request = new Request(url);
+
+// fetch(request)
+//   .then(response => response.json())
+//   .then((news) => {
+//     console.log(news);
+//   })
+//   .catch(error => {
+//     console.log(error);
+//   });
+// }
+// checking()
 
 
   const updateNews = async () => {
