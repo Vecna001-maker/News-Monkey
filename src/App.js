@@ -8,7 +8,7 @@ import LoadingBar from 'react-top-loading-bar';
 
 export default function App(props) {
 
-  const apiKey = process.env.REACT_APP_API_KEY;
+  const apiKey = '9de4cd46ff574da4abd0cd358c348de7';
 
 
   const [mode,setmode] = useState('light');

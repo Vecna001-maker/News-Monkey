@@ -1,160 +1,82 @@
-import React, { useEffect } from 'react'
-import NewsItem from './NewsItem'
+import React, { useEffect, useState } from 'react';
+import NewsItem from './NewsItem';
 import Spinner from './Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useState } from 'react';
 
 export default function News(props) {
+    const [articles, setArticles] = useState([]);
+    const [totalArticles, setTotalArticles] = useState(0);
+    const [page, setPage] = useState(1);
 
+    const updateNews = async () => {
+        props.setProgress(10);
+        const response = await fetch(
+            `https://newsapi.org/v2/top-headlines?country=us&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`
+        );
+        const data = await response.json();
+        props.setProgress(50);
+        setArticles(data.articles);
+        setTotalArticles(data.totalResults);
+        props.setProgress(100);
+    };
 
-  const [articles, setarticles] = useState([]);
-  const [totalArticles, settotalArticles] = useState(0);
-  const [loading, setloading] = useState(true);
-  const [page, setpage] = useState(1);
+    useEffect(() => {
+        updateNews();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.category]);
 
+    const fetchMoreData = async () => {
+        const response = await fetch(
+            `https://newsapi.org/v2/top-headlines?country=us&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`
+        );
+        const data = await response.json();
+        setArticles((prevArticles) => prevArticles.concat(data.articles));
+        setPage(page + 1);
+    };
 
-
-  if (props.category !== '') {
-    let a = props.category;
-    document.title = (a.charAt(0)).toUpperCase() + a.slice(1, a.length);
-  }
-
-  //const checking=async()=>{
-  // const proxyUrl = "https://cors-anywhere.herokuapp.com/"
-  // const qInTitle = "";
-  // const from = "";
-  // const apiKey = "e80d8762132344ca9219f20be1af9c5c";
-  // const url = `${proxyUrl}https://newsapi.org/v2/everything?qInTitle=${qInTitle}&from=${from}language=en&apiKey=${apiKey}`;
-  // const request = new Request(url);
-
-  // fetch(request)
-  //   .then(response => response.json())
-  //   .then((news) => {
-  //     console.log(news);
-  //   })
-  //   .catch(error => {
-  //     console.log(error);
-  //   });
-  // }
-  // checking()
-
-
-  const updateNews = async () => {
-
-
-    let a = props.category;
-    document.title = a.charAt(0).toUpperCase() + a.slice(1, a.length);
-
-
-    props.setProgress(10);
-    //  console.log("DidMount");
-
-    setloading(true); 
-               
-   // https://newsapi.org/v2/top-headlines?country=us&apiKey=9de4cd46ff574da4abd0cd358c348de7
-
-    let promise = await fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=9de4cd46ff574da4abd0cd358c348de7');
-
-    let response = await promise.json();
-    console.log("Getting New Response " + response)
-    props.setProgress(50);
-
-    setarticles(response.articles);
-    setpage(page + 1);
-    settotalArticles(response.totalResults);
-    setloading(false);
-
-    props.setProgress(100);
-  }
-
-  useEffect(() => {
-
-    return () => {
-      updateNews();
-    }
-  }, [])
-
-
-
-
-
-
-
-
-
-  // let { apiKey, category, mode } = this.props;
-
-  const fetchMoreData = async () => {
-
-    props.setProgress(10);
-    // setloading(true);
-    // this.setState({
-    //   page : this.state.page + 1,
-    // });
-
-    let promise = await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`);
-    let response = await promise.json();
-
-    props.setProgress(50);
-
-    setarticles(articles.concat(response.articles));
-    setpage(page + 1);
-    settotalArticles(response.totalResults);
-    // setloading(false);
-
-    props.setProgress(100);
-
-
-  }
-
-
-
-
-  return (
-
-    <div style={{ backgroundColor: (props.mode === 'dark' ? 'black' : 'white'), width: '100%' }}>
-      <div className='container' style={{ backgroundColor: (props.mode === 'dark' ? 'black' : 'white') }} >
-        <div><h2 style={{ color: (props.mode === 'dark' ? 'white' : 'black'), paddingTop: '40px', marginTop: '30px' }} className='text-center'><u>News-Monkey</u> : <u>Top headlines</u></h2></div>
-
-
-        {(loading === true) ? (<Spinner />) : ""}
-
-
-
-
-        <InfiniteScroll
-          dataLength={articles.length}
-          next={fetchMoreData}
-          hasMore={articles.length < totalArticles}
-          loader={loading === true ? <Spinner /> : null}
-
+    return (
+        <div
+            style={{
+                backgroundColor: props.mode === 'dark' ? 'black' : 'white',
+                width: '100%',
+            }}
         >
-
-          <div className="container">
-            <div className='row'>
-              {
-                (loading === true) ? "" : ((articles.map((element) => {
-                  return <div key={element.url} className='col-md-4 my-3'>
-                    <NewsItem source={(element.source.name === null) ? null : (element.source.name)} author={element.author} publishedAt={element.publishedAt} title={element.title} description={element.description} imageUrl={element.urlToImage} newsUrl={element.url} />
-                  </div>
-                }))
-                )
-              }
+            <div className="container">
+                <h2
+                    style={{
+                        color: props.mode === 'dark' ? 'white' : 'black',
+                        paddingTop: '40px',
+                        marginTop: '30px',
+                    }}
+                    className="text-center"
+                >
+                    <u>News-Monkey</u> : <u>Top headlines</u>
+                </h2>
+                <InfiniteScroll
+                    dataLength={articles.length}
+                    next={fetchMoreData}
+                    hasMore={articles.length < totalArticles}
+                    loader={<Spinner />}
+                >
+                    <div className="container">
+                        <div className="row">
+                            {articles.map((element) => (
+                                <div key={element.url} className="col-md-4 my-3">
+                                    <NewsItem
+                                        source={element.source.name}
+                                        author={element.author}
+                                        publishedAt={element.publishedAt}
+                                        title={element.title}
+                                        description={element.description}
+                                        imageUrl={element.urlToImage}
+                                        newsUrl={element.url}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </InfiniteScroll>
             </div>
-          </div>
-        </InfiniteScroll>
-
-
-
-
-
-        {/* <div className='container' style={{ backgroundColor: (mode === 'dark' ? 'black' : ''), display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '50px' }} >
-              <button disabled={this.state.page <= 1} onClick={this.state.page > 1 ? handleOnClickPrevious : null} type="button" className="btn btn-primary">&larr; Previous</button>
-              <button disabled={this.state.page >= Math.ceil(this.state.totalResults / pageSize)} onClick={handleOnClickNext} type="button" className="btn btn-primary">Next &rarr;</button>
-            </div> */}
-
-      </div>
-    </div>
-
-  )
+        </div>
+    );
 }
