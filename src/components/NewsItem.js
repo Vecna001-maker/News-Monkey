@@ -1,5 +1,3 @@
-
-
 import React from 'react'
 
 
@@ -39,16 +37,3 @@ export default function NewsItem(props) {
 
 
 }
-
-// NewsItem.defaultProps = {
-//     category:'general',
-//     pageSize:'6'
-// }
-
-// NewsItem.propTypes = {
-//   category: PropTypes.string,
-//   pageSize: PropTypes.number,
-// }
-
-
-

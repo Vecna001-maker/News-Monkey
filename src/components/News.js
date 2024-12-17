@@ -1,5 +1,3 @@
-
-
 import React, { useEffect } from 'react'
 import NewsItem from './NewsItem'
 import Spinner from './Spinner';
@@ -16,51 +14,53 @@ export default function News(props) {
 
 
 
-    if (props.category !== '') {
-      let a = props.category;
-      document.title = (a.charAt(0)).toUpperCase() + a.slice(1, a.length);
-    }
+  if (props.category !== '') {
+    let a = props.category;
+    document.title = (a.charAt(0)).toUpperCase() + a.slice(1, a.length);
+  }
 
-//const checking=async()=>{
- // const proxyUrl = "https://cors-anywhere.herokuapp.com/"
-// const qInTitle = "";
-// const from = "";
-// const apiKey = "e80d8762132344ca9219f20be1af9c5c";
-// const url = `${proxyUrl}https://newsapi.org/v2/everything?qInTitle=${qInTitle}&from=${from}language=en&apiKey=${apiKey}`;
-// const request = new Request(url);
+  //const checking=async()=>{
+  // const proxyUrl = "https://cors-anywhere.herokuapp.com/"
+  // const qInTitle = "";
+  // const from = "";
+  // const apiKey = "e80d8762132344ca9219f20be1af9c5c";
+  // const url = `${proxyUrl}https://newsapi.org/v2/everything?qInTitle=${qInTitle}&from=${from}language=en&apiKey=${apiKey}`;
+  // const request = new Request(url);
 
-// fetch(request)
-//   .then(response => response.json())
-//   .then((news) => {
-//     console.log(news);
-//   })
-//   .catch(error => {
-//     console.log(error);
-//   });
-// }
-// checking()
+  // fetch(request)
+  //   .then(response => response.json())
+  //   .then((news) => {
+  //     console.log(news);
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //   });
+  // }
+  // checking()
 
 
   const updateNews = async () => {
-    
-    
-      let a = props.category;
-      document.title = a.charAt(0).toUpperCase() + a.slice(1, a.length);
-    
+
+
+    let a = props.category;
+    document.title = a.charAt(0).toUpperCase() + a.slice(1, a.length);
+
 
     props.setProgress(10);
-  //  console.log("DidMount");
+    //  console.log("DidMount");
 
-    setloading(true);
+    setloading(true); 
+               
+   // https://newsapi.org/v2/top-headlines?country=us&apiKey=9de4cd46ff574da4abd0cd358c348de7
 
-    let promise = await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.apiKey}&page=1&pageSize=${props.pageSize}`);
+    let promise = await fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=9de4cd46ff574da4abd0cd358c348de7');
 
     let response = await promise.json();
-    console.log("Getting New Response "+response)
+    console.log("Getting New Response " + response)
     props.setProgress(50);
 
     setarticles(response.articles);
-    setpage(page+1);
+    setpage(page + 1);
     settotalArticles(response.totalResults);
     setloading(false);
 
@@ -68,12 +68,12 @@ export default function News(props) {
   }
 
   useEffect(() => {
-    
-    return () => { 
+
+    return () => {
       updateNews();
     }
   }, [])
-  
+
 
 
 
@@ -92,13 +92,13 @@ export default function News(props) {
     //   page : this.state.page + 1,
     // });
 
-    let promise = await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`);
+    let promise = await fetch(`https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.apiKey}&page=${page + 1}&pageSize=${props.pageSize}`);
     let response = await promise.json();
 
     props.setProgress(50);
 
     setarticles(articles.concat(response.articles));
-    setpage(page+1);
+    setpage(page + 1);
     settotalArticles(response.totalResults);
     // setloading(false);
 
@@ -114,10 +114,10 @@ export default function News(props) {
 
     <div style={{ backgroundColor: (props.mode === 'dark' ? 'black' : 'white'), width: '100%' }}>
       <div className='container' style={{ backgroundColor: (props.mode === 'dark' ? 'black' : 'white') }} >
-        <div><h2 style={{ color: (props.mode === 'dark' ? 'white' : 'black'), paddingTop: '40px',marginTop:'30px' }} className='text-center'><u>News-Monkey</u> : <u>Top headlines</u></h2></div>
+        <div><h2 style={{ color: (props.mode === 'dark' ? 'white' : 'black'), paddingTop: '40px', marginTop: '30px' }} className='text-center'><u>News-Monkey</u> : <u>Top headlines</u></h2></div>
 
 
-        {(loading === true) ? (<Spinner />):""}
+        {(loading === true) ? (<Spinner />) : ""}
 
 
 
@@ -158,5 +158,3 @@ export default function News(props) {
 
   )
 }
-
-
